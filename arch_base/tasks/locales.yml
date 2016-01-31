@@ -1,0 +1,15 @@
+---
+- name: Generate locales
+  locale_gen: name={{ item }} state=present
+  with_items: arch_base_locales
+- name: Set locale
+  lineinfile: dest=/etc/locale.conf line="LANG={{ arch_base_locale }}" regexp="^LANG=" create=yes
+- name: Set collate
+  lineinfile: dest=/etc/locale.conf line="LC_COLLATE={{ arch_base_collate }}" regexp="^LC_COLLATE=" create=yes
+- name: Set keymap
+  copy: content="KEYMAP={{ arch_base_keymap }}\n" dest=/etc/vconsole.conf
+  notify: Update keymap
+- name: Set timezone
+  command: timedatectl set-timezone {{ arch_base_timezone }}
+  args:
+      creates: /etc/localtime

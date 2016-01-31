@@ -1,0 +1,9 @@
+---
+- name: Configure pacman color
+  replace: dest=/etc/pacman.conf regexp="^#(Color)" replace="\1"
+- name: Configure more pacman visuals
+  replace: dest=/etc/pacman.conf regexp="#(VerbosePkgLists)" replace="\1\nILoveCandy"
+- name: Configure pacman multilib repo
+  replace: dest=/etc/pacman.conf regexp="^#(\[multilib\])\n^#(.*)$" replace="\1\n\2"
+  when: ansible_architecture == "x86_64"
+  notify: Update pacman repos

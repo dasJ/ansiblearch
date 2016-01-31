@@ -1,0 +1,7 @@
+---
+- name: Configure SSH to use group only
+  replace: dest=/etc/ssh/sshd_config regexp="^#(AllowGroups ssh-users)" replace="\1"
+  notify: Restart sshd
+- name: Disable SSH root login
+  replace: dest=/etc/ssh/sshd_config regexp="^#(PermitRootLogin no)" replace="\1"
+  notify: Restart sshd

@@ -1,0 +1,5 @@
+---
+- name: Enable timesync
+  command: timedatectl set-ntp true
+  args:
+      creates: /etc/systemd/system/sysinit.target.wants/systemd-timesyncd.service

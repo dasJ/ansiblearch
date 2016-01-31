@@ -1,0 +1,13 @@
+---
+arch_base_locale: "en_US.utf8"
+arch_base_collate: "C"
+arch_base_keymap: "de-latin1-nodeadkeys"
+arch_base_timezone: "Europe/Berlin"
+arch_base_locales: [
+    "de_DE.UTF-8",
+    "de_DE",
+    "de_DE@euro",
+    "en_US.UTF-8",
+    "en_US"
+]
+arch_base_v6gateway: "fe80::1"

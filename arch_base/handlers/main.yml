@@ -1,0 +1,11 @@
+---
+- name: Update hostname
+  hostname: name={{ arch_base_hostname }}
+
+- name: Update keymap
+  command: localectl set-keymap {{ arch_base_keymap }}
+
+- name: Update pacman repos
+  pacman: update_cache=yes
+- name: Restart sshd
+  service: name=sshd state=restarted

@@ -1,0 +1,5 @@
+---
+- name: Configure sudo wheel group
+  replace: dest=/etc/sudoers regexp="^# (%wheel ALL=\(ALL\) ALL)$" replace="\1"
+- name: Configure sudo insults
+  replace: dest=/etc/sudoers regexp="(Defaults mail_badpass\n)##" replace="\1Defaults insults\n##"

@@ -1,0 +1,11 @@
+---
+- name: Set hostname
+  copy: content="{{ arch_base_hostname }}\n" dest=/etc/hostname
+  notify: Update hostname
+# The following will result in "127.0.0.1 [fqdn] localhost", so we'll also need entries for our hostname
+- name: Set FQDN in hosts
+  replace: dest=/etc/hosts regexp=localhost.localdomain replace={{ arch_base_fqdn }}
+- name: Set IPv4 hostname in hosts
+  lineinfile: dest=/etc/hosts line="127.0.0.1	{{ arch_base_fqdn }}	{{ arch_base_hostname }}" insertbefore="# End of file"
+- name: Set IPv6 hostname in hosts
+  lineinfile: dest=/etc/hosts line="::1		{{ arch_base_fqdn }}	{{ arch_base_hostname }}" insertbefore="# End of file"

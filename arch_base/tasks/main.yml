@@ -1,0 +1,9 @@
+---
+- include: hostname.yml
+- include: locales.yml
+- include: pacman.yml
+- include: sudo.yml
+- include: time.yml
+- include: services.yml
+- include: users.yml
+- include: ssh.yml

@@ -1,0 +1,18 @@
+---
+- name: Check for main user
+  stat: path=/home/{{ arch_base_username }}
+  register: userhome
+- name: Add SSH group
+  group: name=ssh-users
+- name: Add main user
+  user: >
+      name={{ arch_base_username }}
+      password={{ lookup('password', 'user-password.txt') }}
+      group=users
+      groups=wheel,ssh-users
+  when: not userhome.stat.exists
+- name: Add SSH directory for main user
+  file: dest=/home/{{ arch_base_username }}/.ssh state=directory owner={{ arch_base_username }} group=users mode=700
+- name: Add main users SSH key
+  copy: remote_src=True src=/root/.ssh/authorized_keys dest=/home/{{ arch_base_username }}/.ssh/authorized_keys owner={{ arch_base_username }} group=users mode=600
+  when: not userhome.stat.exists

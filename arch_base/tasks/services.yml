@@ -1,0 +1,12 @@
+---
+- name: Install important services
+  pacman: update_cache=yes name=cronie,acpid,kexec-tools state=latest
+- name: Enable and start important services
+  service: name={{ item }} enabled=yes state=started
+  with_items:
+      - cronie
+      - acpid
+- name: Create kexec config
+  copy: src=kexec-load.service dest=/etc/systemd/system/kexec-load@.service
+- name: Enable kexec
+  service: name=kexec-load@linux enabled=yes
