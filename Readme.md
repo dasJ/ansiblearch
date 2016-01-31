@@ -7,3 +7,4 @@ This file should provide an overview.
 
 These roles are supposed to set up Arch Linux (basic arch, networking, ...)
 - `arch_base` - A simple and generic arch
+- `serverpower` - Don't accidentally shut down servers

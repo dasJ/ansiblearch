@@ -1,0 +1,15 @@
+---
+- name: Mask poweroff
+  file: src=/dev/null dest=/etc/systemd/system/poweroff.target state=link
+- name: Mask reboot
+  file: src=/dev/null dest=/etc/systemd/system/reboot.target state=link
+- name: Mask halt
+  file: src=/dev/null dest=/etc/systemd/system/halt.target state=link
+- name: Mask suspend
+  file: src=/dev/null dest=/etc/systemd/system/suspend.target state=link
+- name: Mask sleep
+  file: src=/dev/null dest=/etc/systemd/system/sleep.target state=link
+- name: Mask hybrid-sleep
+  file: src=/dev/null dest=/etc/systemd/system/hybrid-sleep.target state=link
+- name: Mask hibernate
+  file: src=/dev/null dest=/etc/systemd/system/hibernate.target state=link
