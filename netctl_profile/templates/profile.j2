@@ -1,0 +1,301 @@
+Description='{{ netctl_profile_description }}'
+Connection={{ netctl_profile_connection }}
+Interface={{ netctl_profile_interface }}
+{% if netctl_profile_bindstointerfaces is defined %}
+BindsToInterfaces=({{ netctl_profile_bindstointerfaces | join(", ") }})
+{% endif %}
+{% if netctl_profile_after is defined %}
+After='{{ netctl_profile_after }}'
+{% endif %}
+{% if netctl_profile_execuppost is defined %}
+ExecUpPost='{{ netctl_profile_execuppost }}'
+{% endif %}
+{% if netctl_profile_execdownpre is defined %}
+ExecDownPre='{{ netctl_profile_execdownpre }}'
+{% endif %}
+{% if netctl_profile_timeoutup is defined %}
+TimeoutUp={{ netctl_profile_timeoutup }}
+{% endif %}
+{% if netctl_profile_forceconnect is defined %}
+ForceConnect={{ netctl_profile_forceconnect }}
+{% endif %}
+{% if netctl_profile_excludeauto is defined %}
+ExcludeAuto={{ netctl_profile_excludeauto }}
+{% endif %}
+{% if netctl_profile_debug is defined %}
+NETCTL_DEBUG={{ netctl_profile_debug }}
+{% endif %}
+
+{# IP options #}
+{% if netctl_profile_connection == "ethernet" or netctl_profile_connection == "wireless" or netctl_profile_connection == "bond" or netctl_profile_connection == "bridge" or netctl_profile_connection == "tunnel" or netctl_profile_connection == "tuntap" or netctl_profile_connection == "vlan" or netctl_profile_connection == "dummy" or netctl_profile_connection == "openvswitch" or netctl_profile_connection == "macvlan" %}
+{% if netctl_profile_ip is defined %}
+IP={{ netctl_profile_ip }}
+{% endif %}
+{% if netctl_profile_ip6 is defined %}
+IP6={{ netctl_profile_ip6 }}
+{% endif %}
+{% if netctl_profile_addresses is defined and netctl_profile_ip == "static" %}
+Address=('{{ "', '".join(netctl_profile_addresses) }}')
+{% endif %}
+{% if netctl_profile_gateway is defined and netctl_profile_ip == "static" %}
+Gateway='{{ netctl_profile_gateway }}'
+{% endif %}
+{% if netctl_profile_routes is defined %}
+Routes=('{{ "', '".join(netctl_profile_routes) }}')
+{% endif %}
+{% if netctl_profile_addresses6 is defined and (netctl_profile_ip6 == "static" or netctl_profile_ip6 == "stateless") %}
+Address6=('{{ "', '".join(netctl_profile_addresses6) }}')
+{% endif %}
+{% if netctl_profile_gateway6 is defined and (netctl_profile_ip6 == "static" or netctl_profile_ip6 == "stateless") %}
+Gateway6='{{ netctl_profile_gateway6 }}'
+{% endif %}
+{% if netctl_profile_routes6 is defined %}
+Routes6=('{{ "', '".join(netctl_profile_routes6) }}')
+{% endif %}
+{% if netctl_profile_dhcpclient is defined and netctl_profile_ip == "dhcp" %}
+DHCPClient='{{ netctl_profile_dhcpclient }}'
+{% endif %}
+{% if netctl_profile_dhcp6client is defined and (netctl_profile_ip6 == "dhcp" or netctl_profile_ip6 == "dhcp-noaddr") %}
+DHCP6Client='{{ netctl_profile_dhcp6client }}'
+{% endif %}
+{% if netctl_profile_dhcpreleaseonstop is defined %}
+DHCPReleaseOnStop={{ netctl_profile_dhcpreleaseonstop }}
+{% endif %}
+{% if netctl_profile_ipcustom is defined %}
+IPCustom=('{{ "', '".join(netctl_profile_ipcustom) }}')
+{% endif %}
+{% if netctl_profile_hostname is defined %}
+Hostname='{{ netctl_profile_hostname }}'
+{% endif %}
+{% if netctl_profile_dns is defined %}
+DNS=('{{ "', '".join(netctl_profile_dns) }}')
+{% endif %}
+{% if netctl_profile_dnsdomain is defined %}
+DNSDomain='{{ netctl_profile_dnsdomain }}'
+{% endif %}
+{% if netctl_profile_dnssearch is defined %}
+DNSSearch='{{ netctl_profile_dnssearch }}'
+{% endif %}
+{% if netctl_profile_dnsoptions is defined %}
+DNSOptions=('{{ "', '".join(netctl_profile_dnsoptions) }}')
+{% endif %}
+{% if netctl_profile_timeoutdhcp is defined %}
+TimeoutDHCP={{ netctl_profile_timeoutdhcp }}
+{% endif %}
+{% if netctl_profile_timeoutdad is defined %}
+TimeoutDAD={{ netctl_profile_timeoutdad }}
+{% endif %}
+{% if netctl_profile_skipdad is defined %}
+SkipDAD={{ netctl_profile_skipdad }}
+{% endif %}
+{% endif %}
+{# Ethernet options #}
+{% if netctl_profile_connection == "ethernet" or netctl_profile_connection == "vlan" or netctl_profile_connection == "macvlan" %}
+{% if netctl_profile_auth8021x is defined %}
+Auth8021X={{ netctl_profile_auth8021x }}
+{% endif %}
+{% if netctl_profile_wpaconfigfile is defined %}
+WPAConfigFile='{{ netctl_profile_wpaconfigfile }}'
+{% endif %}
+{% if netctl_profile_wpadriver is defined %}
+WPADriver='{{ netctl_profile_wpadriver }}'
+{% endif %}
+{% if netctl_profile_timeoutwpa is defined %}
+TimeoutWPA={{ netctl_profile_timeoutwpa }}
+{% endif %}
+{% if netctl_profile_skipnocarrier is defined %}
+SkipNoCarrier={{ netctl_profile_skipnocarrier }}
+{% endif %}
+{% if netctl_profile_priority is defined %}
+Priority={{ netctl_profile_priority }}
+{% endif %}
+{% endif %}
+{# Wireless options #}
+{% if netctl_profile_connection == "wireless" %}
+{% if netctl_profile_security is defined %}
+Security={{ netctl_profile_security }}
+{% endif %}
+ESSID='{{ netctl_profile_essid }}'
+{% if netctl_profile_ap is defined %}
+AP='{{ netctl_profile_ap }}'
+{% endif %}
+{% if netctl_profile_key is defined %}
+Key='{{ netctl_profile_key }}'
+{% endif %}
+{% if netctl_profile_hidden is defined %}
+Hidden={{ netctl_profile_hidden }}
+{% endif %}
+{% if netctl_profile_adhoc is defined %}
+AdHoc={{ netctl_profile_adhoc }}
+{% endif %}
+{% if netctl_profile_scanfrequencies is defined %}
+ScanFrequencies='{{ netctl_profile_scanfrequencies }}'
+{% endif %}
+{% if netctl_profile_frequency is defined %}
+Frequency='{{ netctl_profile_frequency }}'
+{% endif %}
+{% if netctl_profile_priority is defined %}
+Priority={{ netctl_profile_priority }}
+{% endif %}
+{% if netctl_profile_security is defined and netctl_profile_security == "wpa-configsection" %}
+WPAConfigSection=('{{ "', '".join(netctl_profile_wpaconfigsection) }}')
+{% endif %}
+{% if netctl_profile_wpaconfigfile is defined %}
+WPAConfigFile='{{ netctl_profile_wpaconfigfile }}'
+{% endif %}
+{% if netctl_profile_country is defined %}
+Country='{{ netctl_profile_country }}'
+{% endif %}
+{% if netctl_profile_wpagroup is defined %}
+WPAGroup='{{ netctl_profile_wpagroup }}'
+{% endif %}
+{% if netctl_profile_wpadriver is defined %}
+WPADriver='{{ netctl_profile_wpadriver }}'
+{% endif %}
+{% if netctl_profile_timeoutwpa is defined %}
+TimeoutWPA={{ netctl_profile_timeoutwpa }}
+{% endif %}
+{% if netctl_profile_rfkill is defined %}
+RFKill='{{ netctl_profile_rfkill }}'
+{% endif %}
+{% endif %}
+{# Bond options #}
+{% if netctl_profile_connection == "bond" and netctl_profile_mode is defined %}
+Mode='{{ netctl_profile_mode }}'
+{% endif %}
+{# Bridge options #}
+{% if netctl_profile_connection == "bridge" and netctl_profile_skipforwardingdelay is defined %}
+SkipForwardingDelay={{ netctl_profile_skipforwardingdelay }}
+{% endif %}
+{# PPPOE options #}
+{% if netctl_profile_connection == "pppoe" %}
+{% if netctl_profile_user is defined %}
+User='{{ netctl_profile_user }}'
+{% endif %}
+{% if netctl_profile_password is defined %}
+Password='{{ netctl_profile_password }}'
+{% endif %}
+{% if netctl_profile_connectionmode is defined %}
+ConnectionMode={{ netctl_profile_connectionmode }}
+{% endif %}
+{% if netctl_profile_idletimeout is defined %}
+IdleTimeout={{ netctl_profile_idletimeout }}
+{% endif %}
+{% if netctl_profile_maxfail is defined %}
+MaxFail={{ netctl_profile_maxfail }}
+{% endif %}
+{% if netctl_profile_defaultroute is defined %}
+DefaultRoute={{ netctl_profile_defaultroute }}
+{% endif %}
+{% if netctl_profile_usepeerdns is defined %}
+UsePeerDNS={{ netctl_profile_usepeerdns }}
+{% endif %}
+{% if netctl_profile_pppunit is defined %}
+PPPUnit={{ netctl_profile_pppunit }}
+{% endif %}
+{% if netctl_profile_lcpechointerval is defined %}
+LCPEchoInterval='{{ netctl_profile_lcpechointerval }}'
+{% endif %}
+{% if netctl_profile_lcpechofailure is defined %}
+LCPEchoFailure='{{ netctl_profile_lcpechofailure }}'
+{% endif %}
+{% if netctl_profile_optionsfile is defined %}
+OptionsFile='{{ netctl_profile_optionsfile }}'
+{% endif %}
+{% if netctl_profile_pppoeservice is defined %}
+PPPoEService='{{ netctl_profile_pppoeservice }}'
+{% endif %}
+{% if netctl_profile_pppoeac is defined %}
+PPPoEAC='{{ netctl_profile_pppoeac }}'
+{% endif %}
+{% if netctl_profile_pppoesession is defined %}
+PPPoESession='{{ netctl_profile_pppoesession }}'
+{% endif %}
+{% if netctl_profile_pppoemac is defined %}
+PPPoEMAC='{{ netctl_profile_pppoemac }}'
+{% endif %}
+{% if netctl_profile_pppoeipv6 is defined %}
+PPPoEIP6={{ netctl_profile_pppoeipv6 }}
+{% endif %}
+{% endif %}
+{# Mobile PPP options #}
+{% if netctl_profile_connection == "mobile_ppp" %}
+{% if netctl_profile_user is defined %}
+User='{{ netctl_profile_user }}'
+{% endif %}
+{% if netctl_profile_password is defined %}
+Password='{{ netctl_profile_password }}'
+{% endif %}
+{% if netctl_profile_accesspointname is defined %}
+AccessPointName='{{ netctl_profile_accesspointname }}'
+{% endif %}
+{% if netctl_profile_pin is defined %}
+Pin='{{ netctl_profile_pin }}'
+{% endif %}
+{% if netctl_profile_phonenumber is defined %}
+PhoneNumber='{{ netctl_profile_phonenumber }}'
+{% endif %}
+{% if netctl_profile_mode is defined %}
+Mode='{{ netctl_profile_mode }}'
+{% endif %}
+{% if netctl_profile_init is defined %}
+Init='{{ netctl_profile_init }}'
+{% endif %}
+{% if netctl_profile_chatscript is defined %}
+ChatScript='{{ netctl_profile_chatscript }}'
+{% endif %}
+{% if netctl_profile_maxfail is defined %}
+MaxFail={{ netctl_profile_maxfail }}
+{% endif %}
+{% if netctl_profile_defaultroute is defined %}
+DefaultRoute={{ netctl_profile_defaultroute }}
+{% endif %}
+{% if netctl_profile_usepeerdns is defined %}
+UsePeerDNS={{ netctl_profile_usepeerdns }}
+{% endif %}
+{% if netctl_profile_optionsfile is defined %}
+OptionsFile='{{ netctl_profile_optionsfile }}'
+{% endif %}
+{% endif %}
+{# Tunnel options #}
+{% if netctl_profile_connection == "tunnel" %}
+{% if netctl_profile_mode is defined %}
+Mode='{{ netctl_profile_mode }}'
+{% endif %}
+{% if netctl_profile_local is defined %}
+Local='{{ netctl_profile_local }}'
+{% endif %}
+{% if netctl_profile_remote is defined %}
+Remote='{{ netctl_profile_remote }}'
+{% endif %}
+{% if netctl_profile_key is defined and netctl_profile_mode is defined and netctl_profile_mode == "gre" %}
+Key='{{ netctl_profile_key }}'
+{% endif %}
+{% endif %}
+{# Tuntap options #}
+{% if netctl_profile_connection == "tuntap" %}
+{% if netctl_profile_mode is defined %}
+Mode='{{ netctl_profile_mode }}'
+{% endif %}
+{% if netctl_profile_user is defined %}
+User='{{ netctl_profile_user }}'
+{% endif %}
+{% if netctl_profile_group is defined %}
+Group='{{ netctl_profile_group }}'
+{% endif %}
+{% endif %}
+{# VLAN options #}
+{% if netctl_profile_connection == "vlan" %}
+{% if netctl_profile_vlanid is defined %}
+VLANID='{{ netctl_profile_vlanid }}'
+{% endif %}
+{% endif %}
+{# MACVLAN options #}
+{% if netctl_profile_connection == "macvlan" %}
+{% if netctl_profile_mode is defined %}
+Mode={{ netctl_profile_mode }}
+{% endif %}
+{% if netctl_profile_macaddress is defined %}
+MACAddress='{{ netctl_profile_macaddress }}'
+{% endif %}
+{% endif %}

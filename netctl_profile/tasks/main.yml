@@ -1,0 +1,3 @@
+---
+- name: Generate {{ netctl_profile_name }}
+  template: dest=/etc/netctl/{{ netctl_profile_name }} src=profile.j2
