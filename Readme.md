@@ -9,4 +9,4 @@ These roles are supposed to set up Arch Linux (basic arch, networking, ...)
 - `arch_base` - A simple and generic arch
 - `serverpower` - Don't accidentally shut down servers
 - `netctl_profile` - Generate netctl profiles
-
+- `docker_setup` - Install Docker

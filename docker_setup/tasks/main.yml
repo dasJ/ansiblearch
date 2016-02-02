@@ -1,0 +1,9 @@
+---
+- name: Install/Update docker packages
+  pacman: name=docker,docker-compose state=latest
+- name: Start docker
+  service: name=docker state=running enabled=true
+- name: Add users to docker group
+  user: name="{{ item }}" groups=docker append=yes
+  with_items: "{{ docker_setup_group_members }}"
+  when: docker_setup_group_members is defined
