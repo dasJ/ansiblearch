@@ -1,0 +1,92 @@
+---
+- name: Install packages
+  pacman: name=powerdns state=latest
+- name: Create postgres user
+  postgresql_user:
+      name: "{{ powerdns_dbuser }}"
+      password: "{{ powerdns_dbpassword }}"
+  become_user: postgres
+- name: Create postgres database
+  postgresql_db: name={{ powerdns_db }} owner={{ powerdns_dbuser }}
+  become_user: postgres
+- name: Stat database
+  stat: path=/etc/powerdns/sql_imported
+  register: database
+- name: Import database scheme
+  shell: "psql -U {{ powerdns_dbuser }} -d {{ powerdns_db }} -a -f /usr/share/doc/powerdns/schema.pgsql.sql && touch /etc/powerdns/sql_imported"
+  become_user: root
+  when: not database.stat.exists
+# Other hosts
+- name: Set AXFR IPs
+  lineinfile:
+      dest: /etc/powerdns/pdns.conf
+      line: "allow-axfr-ips={{ powerdns_axfr_ips }}"
+      regexp: '^(# )?allow-axfr-ips='
+  when: powerdns_axfr_ips is defined
+- name: Set DNS update from
+  lineinfile:
+      dest: /etc/powerdns/pdns.conf
+      line: "allow-dnsupdate-from={{ powerdns_dnsupdate_from }}"
+      regexp: '^(# )?allow-dnsupdate-from='
+  when: powerdns_dnsupdate_from is defined
+- name: Set allow notify from
+  lineinfile:
+      dest: /etc/powerdns/pdns.conf
+      line: "allow-notify-from={{ powerdns_allow_notify_from }}"
+      regexp: '^(# )?allow-notify-from='
+  when: powerdns_allow_notify_from is defined
+- name: Set allow recursion
+  lineinfile:
+      dest: /etc/powerdns/pdns.conf
+      line: "allow-recursion={{ powerdns_allow_recursion }}"
+      regexp: '^(# )?allow-recursion='
+  when: powerdns_allow_recursion is defined
+- name: Set also notify
+  lineinfile:
+      dest: /etc/powerdns/pdns.conf
+      line: "also-notify={{ powerdns_also_notify }}"
+      regexp: '^(# )?also-notify='
+  when: powerdns_also_notify is defined
+# Backend
+- name: Set backend
+  lineinfile:
+      dest: /etc/powerdns/pdns.conf
+      line: launch=gpgsql
+      regexp: '^(# )?launch='
+  notify: Restart powerdns
+- name: Set postgres host
+  lineinfile:
+      dest: /etc/powerdns/pdns.conf
+      line: 'gpgsql-host={{ powerdns_dbhost }}'
+      regexp: '^gpgsql-host='
+      insertafter: 'launch='
+  notify: Restart powerdns
+- name: Set postgres database
+  lineinfile:
+      dest: /etc/powerdns/pdns.conf
+      line: 'gpgsql-dbname={{ powerdns_db }}'
+      regexp: '^gpgsql-dbname='
+      insertafter: 'gpgsql-host='
+  notify: Restart powerdns
+- name: Set postgres user
+  lineinfile:
+      dest: /etc/powerdns/pdns.conf
+      line: 'gpgsql-user={{ powerdns_dbuser }}'
+      regexp: '^gpgsql-user='
+      insertafter: 'gpgsql-dbname='
+  notify: Restart powerdns
+- name: Set postgres password
+  lineinfile:
+      dest: /etc/powerdns/pdns.conf
+      line: 'gpgsql-password={{ powerdns_dbpassword }}'
+      regexp: '^gpgsql-password='
+      insertafter: 'gpgsql-user='
+  notify: Restart powerdns
+- name: Enable DNSSEC
+  lineinfile:
+      dest: /etc/powerdns/pdns.conf
+      line: 'gpgsql-dnssec=yes'
+      insertafter: 'gpgsql-password='
+  notify: Restart powerdns
+- name: Enable powerdns
+  service: name=powerdns enabled=true

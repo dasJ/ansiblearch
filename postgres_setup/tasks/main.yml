@@ -1,6 +1,6 @@
 ---
 - name: Install packages
-  pacman: name=postgresql state=latest
+  pacman: "name=postgresql,python2-psycopg2" state=latest
 - name: Initialize database
   command: 'initdb --locale en_US.UTF-8 -E UTF8 -D /var/lib/postgres/data'
   args:
