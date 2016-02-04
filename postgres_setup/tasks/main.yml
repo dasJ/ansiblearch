@@ -1,0 +1,10 @@
+---
+- name: Install packages
+  pacman: name=postgresql state=latest
+- name: Initialize database
+  command: 'initdb --locale en_US.UTF-8 -E UTF8 -D /var/lib/postgres/data'
+  args:
+      creates: /var/lib/postgres/data/PG_VERSION
+  become_user: postgres
+- name: Start postgres
+  service: name=postgresql state=running enabled=yes
