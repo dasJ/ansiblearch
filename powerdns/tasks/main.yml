@@ -1,6 +1,6 @@
 ---
 - name: Install packages
-  pacman: name=powerdns state=latest
+  pacman: name="powerdns,bind-tools" state=latest
 - name: Create postgres user
   postgresql_user:
       name: "{{ powerdns_dbuser }}"

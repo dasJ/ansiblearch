@@ -9,8 +9,6 @@ Unit can be started/enabled using the `service` module.
 
 ### For this role
 - `netctl_profile_name` - Filename of the new profile (relative to `/etc/netctl`)
-- `arch_base_fqdn` - FQDN of the system
-- `arch_base_username` - Username of the user to be created
 
 ### Passed to the profile
 - `netctl_profile_description` - `Description` option
