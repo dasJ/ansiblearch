@@ -10,6 +10,7 @@ set -e
 disk="${DISK:=vda}" # Installation root
 country="${COUNTRY:=Germany}" # For pacman mirrors
 ssh_pubkey="${SSH_PUBKEY:=ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFCX9/rkqnviowqMGLesxO/822cBLeunk508ZaxyE/tB janne@acerola}" # SSH key for ansible login
+quickdeploy="${QUICKDEPLOY:=0}"
 
 # Partition table
 # We create a swap that matches the RAM size
@@ -89,10 +90,12 @@ ssh-keygen -N '' -t ed25519 -f /mnt/etc/ssh/ssh_host_ed25519_key
 ssh-keygen -N '' -t rsa -f /mnt/etc/ssh/ssh_host_rsa_key
 
 # Generate secure moduli
-ssh-keygen -G /mnt/etc/ssh/moduli.all -b 4096
-ssh-keygen -T /mnt/etc/ssh/moduli.safe -f /mnt/etc/ssh/moduli.all
-mv /mnt/etc/ssh/moduli.safe /mnt/etc/ssh/moduli
-rm /mnt/etc/ssh/moduli.all
+if [ "$quickdeploy" != "1" ]; then
+	ssh-keygen -G /mnt/etc/ssh/moduli.all -b 4096
+	ssh-keygen -T /mnt/etc/ssh/moduli.safe -f /mnt/etc/ssh/moduli.all
+	mv /mnt/etc/ssh/moduli.safe /mnt/etc/ssh/moduli
+	rm /mnt/etc/ssh/moduli.all
+fi
 
 # Create secure SSH config (secure secure shell)
 echo "#	$OpenBSD: sshd_config,v 1.94 2015/02/02 01:57:44 deraadt Exp $
