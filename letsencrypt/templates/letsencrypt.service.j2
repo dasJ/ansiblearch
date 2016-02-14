@@ -1,0 +1,8 @@
+[Unit]
+Description=Letsencrypt certificate renewal
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/mkdir -p {{ letsencrypt_webroot_path | default("/tmp/letsencrypt-auto") }}
+ExecStart=/usr/bin/letsencrypt --renew certonly
+ExecStartPost=/usr/bin/rm -r {{ letsencrypt_webroot_path | default("/tmp/letsencrypt-auto") }}

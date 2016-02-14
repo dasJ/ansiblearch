@@ -1,0 +1,11 @@
+---
+- name: Install/Update letsencrypt package
+  pacman: name=letsencrypt state=latest update_cache=yes
+- name: Create configuration
+  template: dest=/etc/letsencrypt/cli.ini src=cli.ini.j2
+  notify: Generate certificate
+- name: Create service unit
+  template: src=letsencrypt.service.j2 dest=/etc/systemd/system/letsencrypt.service
+- name: Create timer unit
+  copy: src=letsencrypt.timer dest=/etc/systemd/system/letsencrypt.timer
+  notify: Enable timer

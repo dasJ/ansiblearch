@@ -1,0 +1,10 @@
+email = {{ letsencrypt_email }}
+rsa-key-size = {{ letsencrypt_key_size | default(4096) }}
+domains = {{ letsencrypt_domains | join(",") }}
+
+server = https://acme-v01.api.letsencrypt.org/directory
+authenticator = {{ letsencrypt_authenticator | default("webroot") }}
+webroot-path = {{ letsencrypt_webroot_path | default("/tmp/letsencrypt-auto") }}
+standalone-supported-challenges = {{ letsencrypt_standalone_challenge | default("tls-sni-01") }}
+
+agree-tos = True

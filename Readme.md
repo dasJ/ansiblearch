@@ -14,4 +14,5 @@ These roles are supposed to set up Arch Linux (basic arch, networking, ...)
 
 System maintenance:
 - `powerdns` - Configure a PowerDNS Server with PostgreSQL
+- `letsencrypt` - Install letsencrypt and maintain a configuration file
 
