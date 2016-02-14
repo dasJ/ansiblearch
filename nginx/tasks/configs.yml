@@ -1,0 +1,15 @@
+---
+- name: Update copyable configuration files
+  copy: dest=/etc/nginx/{{ item }} src={{ item }}
+  with_items:
+      - nginx.conf
+      - fastcgi.conf
+  notify: Reload nginx
+
+- name: Update templated configuration files
+  template: dest=/etc/nginx/{{ item }} src={{ item }}.j2
+  with_items:
+      - security.conf
+      - upstreams.conf
+      - default.conf
+  notify: Reload nginx

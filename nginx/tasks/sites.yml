@@ -1,0 +1,18 @@
+---
+- name: Create sites directories
+  file: name=/etc/nginx/{{ item }} state=directory
+  with_items: 
+      - sites-enabled
+      - sites-available
+- name: Add HTTP redirect
+  copy: src=http-redirect dest=/etc/nginx/sites-available/http
+- name: Add default server block
+  template: src=default.j2 dest=/etc/nginx/sites-available/default
+- name: Enable default sites
+  file: dest=/etc/nginx/sites-enabled/{{ item }} src=../sites-available/{{ item }} state=link
+  with_items:
+      - http
+      - default
+  notify: Reload nginx
+- name: Create default webroot
+  file: dest={{ nginx_default_webroot }} state=directory

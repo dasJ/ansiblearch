@@ -1,0 +1,7 @@
+---
+- name: Enable nginx
+  service: name=nginx enabled=yes state=started
+- name: Reload nginx
+  service: name=nginx state=reloaded
+- name: Enable timer
+  service: name=dhparam-nginx.timer state=started enabled=yes

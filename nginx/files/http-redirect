@@ -1,0 +1,7 @@
+server {
+	listen localhost:80 default_server deferred;
+	listen [::1]:80 default_server;
+	server_name _;
+	include default.conf;
+	return 301 https://$host$request_uri;
+}

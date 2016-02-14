@@ -1,0 +1,11 @@
+server {
+	listen 443 ssl deferred spdy;
+	listen [::]:443 ssl deferred spdy;
+
+	server_name _;
+	include default.conf;
+	location / {
+		root {{ nginx_default_webroot }};
+		index index.html index.htm;
+	}
+}

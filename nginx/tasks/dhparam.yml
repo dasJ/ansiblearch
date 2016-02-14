@@ -1,0 +1,14 @@
+---
+- name: Add dhparam regeneration units
+  copy: src={{ item }} dest=/etc/systemd/system/{{ item }}
+  with_items:
+      - dhparam-nginx.service
+      - dhparam-nginx.timer
+  notify: Enable timer
+- name: Stat dhparams
+  stat: path=/etc/nginx/dhparam.pem
+  register: dhparam
+- name: Generate initial dhparams
+  service: name=dhparam-nginx.service state=started
+  when: not dhparam.stat.exists
+  notify: Reload nginx

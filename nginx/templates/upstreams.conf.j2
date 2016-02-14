@@ -1,0 +1,9 @@
+{% if nginx_upstreams is defined %}
+{% for upstream in nginx_upstreams %}
+upstream {{ upstream.name }} {
+{% for server in upstream.servers %}
+	server {{ server }};
+{% endfor %}
+}
+{% endfor %}
+{% endif %}

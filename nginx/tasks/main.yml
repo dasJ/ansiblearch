@@ -1,0 +1,19 @@
+---
+- name: Install/Update nginx package
+  pacman: name=nginx,git state=latest update_cache=yes
+  notify: Enable nginx
+
+- include: configs.yml
+- include: sites.yml
+- include: dhparam.yml
+- include: statuscats.yml
+
+- name: Remove default files we don't need
+  file: name=/etc/nginx/{{ item }} state=absent
+  with_items:
+      - fastcgi_params
+      - koi-utf
+      - koi-win
+      - scgi_params
+      - uwsgi_params
+      - win-utf

@@ -1,0 +1,24 @@
+ssl_certificate      {{ nginx_ssl_certificate }};
+ssl_certificate_key  {{ nginx_ssl_key }};
+ssl_dhparam          /etc/nginx/dhparam.pem;
+ssl_protocols        TLSv1 TLSv1.1 TLSv1.2;
+ssl_ciphers          "EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA256:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EDH+aRSA+AESGCM:EDH+aRSA+SHA256:EDH+aRSA:EECDH:!aNULL:!eNULL:!MEDIUM:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS:!RC4:!SEED";
+ssl_prefer_server_ciphers on;
+ssl_session_cache    shared:SSL:10m;
+ssl_session_timeout  5m;
+# HSTS with all subdomains and preloading
+add_header           Strict-Transport-Security "max-age=31536000; includeSubdomains; preload" always;
+# Enable ssl staping (OCSP)
+ssl_stapling         on;
+ssl_stapling_verify  on;
+ssl_trusted_certificate {{ nginx_ssl_trusted }};
+resolver             8.8.8.8 8.8.4.4 valid=300s;
+resolver_timeout     10s;
+# Do not allow this site to be displayed in iframes
+add_header           X-Frame-Options "sameorigin" always;
+# Do not permit Content-Type sniffing.
+add_header           X-Content-Type-Options "nosniff" always;
+# Reenable XSS Filter even when disabled by user
+add_header           X-XSS-Protection "1; mode=block" always;
+# Do not show our token
+server_tokens        off;

@@ -1,0 +1,7 @@
+[Unit]
+Description=nginx dhparam regeneration
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/openssl dhparam -out /etc/nginx/dhparam.pem.bak 4096
+ExecStartPost=/usr/bin/mv /etc/nginx/dhparam.pem.bak /etc/nginx/dhparam.pem

@@ -1,0 +1,3 @@
+---
+- name: Update status cats
+  git: repo=https://github.com/derintendant/nginx-status-cats dest={{ nginx_status_cats_path | default("/srv/http/nginx-status-cats") }}
