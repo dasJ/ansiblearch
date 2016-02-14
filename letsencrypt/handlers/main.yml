@@ -1,5 +1,5 @@
 ---
-- name: Enable timer
+- name: Enable letsencrypt timer
   service: name=letsencrypt.timer state=started enabled=yes
 - name: Generate certificate
   service: name=letsencrypt.service state=started

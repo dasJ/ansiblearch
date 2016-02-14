@@ -4,7 +4,7 @@
   with_items:
       - dhparam-nginx.service
       - dhparam-nginx.timer
-  notify: Enable timer
+  notify: Enable nginx timer
 - name: Stat dhparams
   stat: path=/etc/nginx/dhparam.pem
   register: dhparam
