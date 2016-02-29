@@ -11,11 +11,18 @@ disk="${DISK:=vda}" # Installation root
 country="${COUNTRY:=Germany}" # For pacman mirrors
 ssh_pubkey="${SSH_PUBKEY:=ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFCX9/rkqnviowqMGLesxO/822cBLeunk508ZaxyE/tB janne@acerola}" # SSH key for ansible login
 quickdeploy="${QUICKDEPLOY:=0}"
+# ZFS
+zfs="${ZFS:=0}"
+ashift="${ASHIFT:=12}"
 
 # Partition table
 # We create a swap that matches the RAM size
 echo "o
 y
+n
+
+
++512M
 
 n
 
@@ -37,13 +44,37 @@ y
 # The r-g-w-y thing converts the GPT to an MBR.
 partprobe
 
-# Partitions
-mkfs.ext4 -FL root /dev/${disk}1
-mkswap -L swap0 /dev/${disk}2
+# Root partition
+if [ "$zfs" == "1" ]; then
+	# We can create by /dev/sd... because it is not likely to change.
+	# If you don't want this, specify disk/by-uuid/... as DISK.
+	zpool create -o ashift=$ashift zroot /dev/${disk}2
+	zfs set mountpoint=/ zroot
+	zfs set xattr=sa zroot
+	zfs set acltype=posixacl zroot
+	zfs set compression=lz4 zroot
+	zpool export zroot
+	zpool import -d `dirname "/dev/${disk}"` -R /mnt zroot
+	# Import my repo
+	echo "[zfs]" >> /etc/pacman.conf
+	echo "Server = https://files.derintendant.de/~jenkins/pacman/\$repo" >> /etc/pacman.conf
+	echo "SigLevel = Required TrustedOnly" >> /etc/pacman.conf
+	curl -O https://files.derintendant.de/~jenkins/jenkins.gpg
+	pacman-key --add jenkins.gpg
+	pacman-key --lsign 4F7D5E74
+else
+	mkfs.ext4 -FL root /dev/${disk}2
+	mount /dev/${disk}2 /mnt
+fi
 
-# Mount
-mount /dev/${disk}1 /mnt
-swapon /dev/${disk}2
+# /boot
+mkfs.fat /dev/${disk}1
+mkdir -pv /mnt/boot
+mount /dev/${disk}1 /mnt/boot
+
+# Swap
+mkswap -L swap0 /dev/${disk}3
+swapon /dev/${disk}3
 
 # Init pacman
 pacman -Sy --noconfirm reflector
@@ -51,7 +82,10 @@ reflector --verbose --country "$country" --fastest 20 --latest 50 --save /etc/pa
 
 # Create new root
 pacstrap /mnt base base-devel syslinux openssh python2
-genfstab -U /mnt > /mnt/etc/fstab
+if [ "zfs" == "1" ]; then
+	pacstrap /mnt zfs-git
+fi
+genfstab -U /mnt | grep -v zroot > /mnt/etc/fstab
 
 # Enable units
 ln -sv /usr/lib/systemd/system/sshd.service /mnt/etc/systemd/system/multi-user.target.wants/
@@ -246,13 +280,28 @@ ssh-keygen -lf /mnt/etc/ssh/ssh_host_rsa_key.pub >> /mnt/etc/issue
 ssh-keygen -lf /mnt/etc/ssh/ssh_host_ed25519_key.pub >> /mnt/etc/issue
 echo -e "\n" >> /mnt/etc/issue
 
+# Modify initrd for zfs
+if [ "$zfs" == "1" ]; then
+	sed -i 's/block/block zfs/g' /mnt/etc/mkinitcpio.conf
+	arch-chroot /mnt /usr/bin/mkinitcpio -p linux
+fi
+
 # syslinux
 arch-chroot /mnt /usr/bin/syslinux-install_update -i -a -m
-sed -i "s/sda3/${disk}1/g" /mnt/boot/syslinux/syslinux.cfg
+if [ "$zfs" == "1" ]; then
+	sed -i 's:root=/dev/sda3:zfs=zroot:g' /mnt/boot/syslinux/syslinux.cfg
+else
+	sed -i "s/sda3/${disk}1/g" /mnt/boot/syslinux/syslinux.cfg
+fi
 sed -i "s/TIMEOUT 50/TIMEOUT 20/g" /mnt/boot/syslinux/syslinux.cfg
 
 # Clean up
-umount /mnt
+umount /mnt/boot
+if [ "$zfs" == "1" ]; then
+	zpool export zroot
+else
+	umount /mnt
+fi
 swapoff -a
 sync
 
