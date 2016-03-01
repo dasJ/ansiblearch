@@ -49,7 +49,9 @@ if [ "$zfs" == "1" ]; then
 	# We can create by /dev/sd... because it is not likely to change.
 	# If you don't want this, specify disk/by-uuid/... as DISK.
 	zpool create -o ashift=$ashift zroot /dev/${disk}2
+	set +e
 	zfs set mountpoint=/ zroot
+	set -e
 	zfs set xattr=sa zroot
 	zfs set acltype=posixacl zroot
 	zfs set compression=lz4 zroot
