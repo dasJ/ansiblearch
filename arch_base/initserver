@@ -84,7 +84,7 @@ reflector --verbose --country "$country" --fastest 20 --latest 50 --save /etc/pa
 
 # Create new root
 pacstrap /mnt base base-devel syslinux openssh python2
-if [ "zfs" == "1" ]; then
+if [ "$zfs" == "1" ]; then
 	pacstrap /mnt zfs-git
 fi
 genfstab -U /mnt | grep -v zroot > /mnt/etc/fstab
